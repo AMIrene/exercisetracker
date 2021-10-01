@@ -56,16 +56,16 @@
 
 
 const router = require("express").Router();
-const db = require("../models");
+const Workout = require("../models/workouts.js");
 
 
 // Aggregation function from mongoDB to add totalDuration
 router.get("/api/workouts", (req, res) => {
-  db.Workout.aggregate([
+  Workout.aggregate([
     {
       $addFields: {
           totalDuration:
-              { $sum: '$exercise.duration' },
+              { $sum: '$exercises.duration' },
           totalWeight:
               { $sum: '$exercises.weight' }
       }
@@ -80,28 +80,30 @@ router.get("/api/workouts", (req, res) => {
 });
 
 // Route to add sort
-router.get("/api/workouts/range", (req, res) => {
-  db.Workout.aggregate([
+router.get('/api/workouts/range', (req, res) => {
+  Workout.aggregate([
     {
       $addFields: {
-        totalDuration: { $sum: "$exercises.duration" },
+        totalDuration: {
+          $sum: '$exercises.duration',
+        },
       },
     },
   ])
     .sort({ _id: -1 })
-    .limit(10)
-    .then((workouts) => {
-      res.json(workouts);
+    .limit(7)
+    .then((dbWorkouts) => {
+      console.log(dbWorkouts);
+      res.json(dbWorkouts);
     })
     .catch((err) => {
-      res.status(400).json(err);
+      res.json(err);
     });
 });
-
 // Create a new workout
 router.post("/api/workouts", ({ body }, res) => {
   console.log(body);
-  db.Workout.create({})
+  Workout.create({})
     .then((newWorkout) => {
       res.json(newWorkout);
     })
@@ -112,7 +114,7 @@ router.post("/api/workouts", ({ body }, res) => {
 
 // Route to add exercise to current workout
 router.put("/api/workouts/:id", (req, res) => {
-  db.Workout.findByIdAndUpdate(
+  Workout.findByIdAndUpdate(
     req.params.id,
     { $push: { exercises: req.body } },
     { new: true }
