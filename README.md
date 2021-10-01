@@ -8,6 +8,12 @@ This is a fitness tracker, where users can add their workouts and track their pr
 * Express
 * Heroku
 
+## Installation
+
+1. Clone repo
+2. Run npm install
+3. To start the server, run the command 'npm start'
+
 ## User Story
 
 * As a user, I want to be able to view create and track daily workouts. I want to be able to log multiple exercises in a workout on a given day. I should also be able to track the name, type, weight, sets, reps, and duration of exercise. If the exercise is a cardio exercise, I should be able to track my distance traveled.
@@ -31,3 +37,7 @@ The user should be able to:
   ![Screenshot2](./assets/homepage_ss.PNG)
 
   ### Link
+  [Fitness Tracker](https://exercisetracker12345.herokuapp.com/) - deployed on Heroku
+
+## Licenses
+MIT
