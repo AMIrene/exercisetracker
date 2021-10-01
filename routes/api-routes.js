@@ -66,8 +66,7 @@ router.get("/api/workouts", (req, res) => {
       $addFields: {
           totalDuration:
               { $sum: '$exercises.duration' },
-          totalWeight:
-              { $sum: '$exercises.weight' }
+         
       }
   }
 ])
@@ -112,18 +111,18 @@ router.post("/api/workouts", ({ body }, res) => {
     });
 });
 
-// Route to add exercise to current workout
-router.put("/api/workouts/:id", (req, res) => {
+router.put('/api/workouts/:id', ({ body, params }, res) => {
   Workout.findByIdAndUpdate(
-    req.params.id,
-    { $push: { exercises: req.body } },
-    { new: true }
+    params.id,
+    { $push: { exercises: body } },
+    // "runValidators" will ensure new exercises meet our schema requirements
+    { new: true, runValidators: true }
   )
-    .then((updateWorkout) => {
-      res.json(updateWorkout);
+    .then((dbWorkout) => {
+      res.json(dbWorkout);
     })
     .catch((err) => {
-      res.status(400).json(err);
+      res.json(err);
     });
 });
 
